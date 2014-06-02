@@ -1,0 +1,16 @@
+#fit-calendar, #fit-calendar th, #fit-calendar td {
+    border-collapse: collapse;
+    border: 1px solid #666;
+}
+
+#fit-calendar th, #fit-calendar td {
+    width: 100px;
+    height: 75px;
+    text-align: center;
+    padding: 5px;
+}
+
+#fit-calendar th {
+    height: 10px;
+}
+
