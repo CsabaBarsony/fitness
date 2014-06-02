@@ -6,18 +6,18 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	scope.selectedActivity = scope.activities[0];
 
 	scope.months = [
-		{ id: 1, name: "Jan" },
-		{ id: 2, name: "Feb" },
-		{ id: 3, name: "Mar" },
-		{ id: 4, name: "Apr" },
-		{ id: 5, name: "Maj" },
-		{ id: 6, name: "Jun" },
-		{ id: 7, name: "Jul" },
-		{ id: 8, name: "Aug" },
-		{ id: 9, name: "Sep" },
-		{ id: 10, name: "Oct" },
-		{ id: 11, name: "Nov" },
-		{ id: 12, name: "Dec" }
+		{ id: 0, name: "Jan" },
+		{ id: 1, name: "Feb" },
+		{ id: 2, name: "Mar" },
+		{ id: 3, name: "Apr" },
+		{ id: 4, name: "May" },
+		{ id: 5, name: "Jun" },
+		{ id: 6, name: "Jul" },
+		{ id: 7, name: "Aug" },
+		{ id: 8, name: "Sep" },
+		{ id: 9, name: "Oct" },
+		{ id: 10, name: "Nov" },
+		{ id: 11, name: "Dec" }
 	];
 
 	scope.selectedMonth = scope.months[4];

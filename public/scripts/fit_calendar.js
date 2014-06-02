@@ -1,25 +1,25 @@
 "use strict";
 
-fit.directive("calendar", function(){
+fit.directive("calendar", ["calendarService", function(calendarService){
 	return {
 		restrict: "E",
+
 		replace: true,
+
 		templateUrl: "templates/fit_calendar.html",
+
+		scope: {
+			selectedMonth: "="
+		},
+
 		link: function(scope){
 			scope.calendar = {
-				dayShortNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-			};
-			scope.clickOnDay = function(day){
-				console.log("day: " + day);
+				dayShortNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+
+				clickOnDay: function(day){
+					console.log(scope.selectedMonth);
+				}
 			};
 		}
 	};
-
-	function firstDay(){
-		// ToDo
-	}
-
-	function lastDay(){
-		// ToDo
-	}
-});
+}]);

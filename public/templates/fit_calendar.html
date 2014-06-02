@@ -1,12 +1,12 @@
 <table id="fit-calendar">
 	<thead>
 		<tr>
-			<th ng-repeat="dayShortName in calendar.dayShortNames">{{dayShortName}}</th>
+			<th ng-repeat="dayShortName in calendar.dayShortNames">{{dayShortName}}, {{selectedMonth.name}}</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="week in [0, 1, 2, 3, 4, 5]" id="fit-week-{{week}}">
-			<td ng-repeat="day in [0, 1, 2, 3, 4, 5, 6]" id="fit-day-{{week * 7 + day}}" class="fit-day" ng-click="clickOnDay(week * 7 + day)">
+			<td ng-repeat="day in [0, 1, 2, 3, 4, 5, 6]" id="fit-day-{{week * 7 + day}}" class="fit-day" ng-click="calendar.clickOnDay(week * 7 + day)">
 				<div ng-repeat="quantity in activity.hits[week * 7 + day]">
 					{{activity.components[$index].name}}: {{quantity}}{{activity.components[$index].unit}}
 				</div>
