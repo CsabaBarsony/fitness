@@ -9,17 +9,32 @@ fit.directive("calendar", ["calendarService", function(calendarService){
 		templateUrl: "templates/fit_calendar.html",
 
 		scope: {
-			month: "="
+			activity: "="
 		},
 
 		link: function(scope){
 			scope.calendar = {
+				cells: new Array(42),
+
 				dayShortNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
 
 				clickOnDay: function(day){
-					console.log(scope.month);
+					console.log(scope.activity);
 				}
 			};
+
+			for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
+				scope.calendar.cells[i] = {
+					day: i
+				};
+			}
+
+			scope.$watch("activity", function(newActivity){
+				var dayShift = calendarService.getFirstDay();
+				for(var i = 0, l = newActivity.hits.length; i < l; i++){
+					scope.calendar.cells[newActivity.hits[i].day + dayShift].hit = newActivity.hits[i].quantity + scope.activity.unit;
+				}
+			});
 		}
 	};
 }]);
