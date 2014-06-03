@@ -18,7 +18,7 @@
 						ng-options="month.name for month in months"
 						ng-change="changeActivityOrMonth()">
 		</select>
-		<calendar selectedMonth="selectedMonth.name"></calendar>
+		<calendar month="selectedMonth.id"></calendar>
 	</div>
 
 	<script type="text/javascript" src="lib/angular/angular.js"></script>
@@ -28,7 +28,6 @@
 	<script type="text/javascript" src="scripts/fit.js"></script>
 	<script type="text/javascript" src="scripts/fit_controller.js"></script>
 	<script type="text/javascript" src="scripts/fit_calendar.js"></script>
-	<script type="text/javascript" src="scripts/fit_calendar_service.js"></script>
 	<script type="text/javascript" src="scripts/fit_api.js"></script>
 </body>
 </html>
