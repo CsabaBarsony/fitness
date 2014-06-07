@@ -29,7 +29,7 @@ fit.directive("calendar", ["calendarService", function(calendarService){
 				};
 			}
 
-			scope.$watch("activity", function(newActivity, oldActivity){
+			scope.$watch("activity", function(newActivity){
 				for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
 					scope.calendar.cells[i].hit = null;
 				}

@@ -8,7 +8,7 @@
 
 			inject(function($rootScope, $compile){
 				scope = $rootScope.$new();
-				var activity = {
+				scope.activity = {
 					name: "Running",
 					month: 1,
 					unit: "m",
@@ -22,6 +22,8 @@
 		it("blabla", function(){
 			var isoScope = element.isolateScope();
 			expect(isoScope.majom()).toBe("majom");
+			expect(isoScope.activity).toBeDefined();
+			expect(isoScope.activity.name).toBe("Running");
 		});
 	});
 
