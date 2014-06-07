@@ -23,13 +23,13 @@ fit.directive("calendar", ["calendarService", function(calendarService){
 				return "majom";
 			};
 
-			/*for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
+			for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
 				scope.calendar.cells[i] = {
 					day: i
 				};
 			}
 
-			scope.$watch("activity", function(newActivity){
+			scope.$watch("activity", function(newActivity, oldActivity){
 				for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
 					scope.calendar.cells[i].hit = null;
 				}
@@ -37,7 +37,7 @@ fit.directive("calendar", ["calendarService", function(calendarService){
 				for(var i = 0, l = newActivity.hits.length; i < l; i++){
 					scope.calendar.cells[newActivity.hits[i].day + dayShift].hit = newActivity.hits[i].quantity + scope.activity.unit;
 				}
-			});*/
+			});
 		}
 	};
 }]);

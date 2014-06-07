@@ -1,28 +1,29 @@
 "use strict";
 
-describe("Calendar directive", function(){
-	var element, scope;
+	describe("Calendar directive", function(){
+		var element, scope;
 
-	beforeEach(function(){
-		module("fit", "templates");
+		beforeEach(function(){
+			module("fit", "templates");
 
-		inject(function($rootScope, $compile){
-			scope = $rootScope.$new();
-			var activity = {
-				name: "Running",
-				month: 1,
-				unit: "m",
-				hits: [{ day: 10, quantity: 1000 }]
-			};
-			element = $compile(angular.element("<calendar activity='activity'></calendar>"))(scope);
-			$rootScope.$digest();
+			inject(function($rootScope, $compile){
+				scope = $rootScope.$new();
+				var activity = {
+					name: "Running",
+					month: 1,
+					unit: "m",
+					hits: [{ day: 10, quantity: 1000 }]
+				};
+				element = $compile(angular.element("<calendar activity='activity'></calendar>"))(scope);
+				$rootScope.$digest();
+			});
+		});
+
+		it("blabla", function(){
+			var isoScope = element.isolateScope();
+			expect(isoScope.majom()).toBe("majom");
 		});
 	});
-
-	it("blabla", function(){
-		expect(element.scope().majom()).toBe("majom");
-	});
-});
 
 describe("Calendar service", function(){
 	var calendarService;
