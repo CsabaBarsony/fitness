@@ -10,6 +10,7 @@
 </head>
 <body>
 	<div ng-controller="FitController">
+		<hello></hello>
 		<select	ng-model="selectedActivity"
 						ng-options="activity.name for activity in activities"
 						ng-change="changeActivityOrMonth()">

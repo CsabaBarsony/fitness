@@ -20,7 +20,7 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		{ id: 11, name: "Dec" }
 	];
 
-	scope.selectedMonth = scope.months[4];
+	scope.selectedMonth = scope.months[5];
 
 	scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedMonth.id);
 
