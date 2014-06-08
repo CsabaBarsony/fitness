@@ -20,12 +20,15 @@ fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 				for(var i = 0, l = scope.cells.length; i <= l; i++){
 					scope.cells[i] = {
 						day: calendarService.setDay(i, scope.activity.year, scope.activity.month),
-						hit: null
+						unit: scope.activity.unit,
+						month: scope.activity.month,
+						year: scope.activity.year,
+						activity: scope.activity.name
 					};
 				}
 
 				for(i = 0, l = newActivity.hits.length; i < l; i++){
-					scope.cells[newActivity.hits[i].day + dayOffset].hit = newActivity.hits[i].quantity + scope.activity.unit;
+					scope.cells[newActivity.hits[i].day + dayOffset].quantity = newActivity.hits[i].quantity;
 				}
 			});
 		}

@@ -24,7 +24,7 @@ describe("Calendar directive", function(){
 		var isoScope = element.isolateScope();
 		expect(isoScope.activity.name).toBe("Running");
 		expect(isoScope.activity.hits.length).toBe(1);
-		expect(isoScope.cells[15].hit).toBe("1000m");
+		expect(isoScope.cells[15].quantity).toBe(1000);
 		expect(isoScope.cells.length).toBe(36);
 	});
 });

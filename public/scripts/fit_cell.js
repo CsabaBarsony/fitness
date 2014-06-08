@@ -1,6 +1,6 @@
 "use strict";
 
-fit.directive("fitCell", ["fitCellService", function(cellService){
+fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 	return {
 		restrict: "E",
 		replace: true,
@@ -9,14 +9,29 @@ fit.directive("fitCell", ["fitCellService", function(cellService){
 			cell: "="
 		},
 		link: function(scope){
-			scope.setDay = function(day){
-				if(day > 0){
-					return day;
+			scope.setDay = function(){
+				if(scope.cell.day > 0){
+					return scope.cell.day;
 				}
 			};
 
-			scope.dayClick = function(day){
+			scope.setHit = function(){
+				if(scope.cell.quantity){
+					return scope.cell.quantity + scope.cell.unit;
+				}
+			};
 
+			scope.dayClick = function(){
+				var quantity = prompt("New hit at " + scope.cell.year + "." + scope.cell.month + "." + scope.cell.day + " (" + scope.cell.unit + ")", "");
+				var hit = {
+					year: scope.cell.year,
+					month: scope.cell.month,
+					day: scope.cell.day,
+					activity: scope.cell.activity,
+					unit: scope.cell.unit,
+					quantity: quantity
+				};
+				api.saveHit(hit);
 			};
 		}
 	}

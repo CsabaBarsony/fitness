@@ -8,6 +8,9 @@ fit.factory("api", function(){
 				{ id: 2, name: "Bench press"}
 			];
 		},
+		saveHit: function(hit){
+			console.log("Hit saved: " + JSON.stringify(hit, null, 4));
+		},
 		getActivity: function(activity, year, month){
 			if(month === 4){
 				if(activity === 1){

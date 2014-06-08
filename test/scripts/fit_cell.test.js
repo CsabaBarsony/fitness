@@ -10,7 +10,11 @@ describe("Cell directive", function(){
 			var scope = $rootScope.$new();
 			scope.cell = {
 				day: 5,
-				hit: "1000m"
+				quantity: 1000,
+				unit: "m",
+				month: 1,
+				year: 2014,
+				activity: "Running"
 			};
 			element = $compile(angular.element("<fit-cell cell='cell'></fit-cell>"))(scope);
 			$rootScope.$digest();
@@ -20,6 +24,10 @@ describe("Cell directive", function(){
 	it("should contain correct data", function(){
 		var isoScope = element.isolateScope();
 		expect(isoScope.cell.day).toBe(5);
-		expect(isoScope.cell.hit).toBe("1000m");
+		expect(isoScope.cell.quantity).toBe(1000);
+		expect(isoScope.cell.unit).toBe("m");
+		expect(isoScope.cell.month).toBe(1);
+		expect(isoScope.cell.year).toBe(2014);
+		expect(isoScope.cell.activity).toBe("Running");
 	});
 });
