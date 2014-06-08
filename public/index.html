@@ -13,13 +13,17 @@
 		<hello></hello>
 		<select	ng-model="selectedActivity"
 						ng-options="activity.name for activity in activities"
-						ng-change="changeActivityOrMonth()">
+						ng-change="optionsChange()">
+		</select>
+		<select ng-model="selectedYear"
+						ng-options="year for year in years"
+						ng-change="optionsChange()">
 		</select>
 		<select ng-model="selectedMonth"
 						ng-options="month.name for month in months"
-						ng-change="changeActivityOrMonth()">
+						ng-change="optionsChange()">
 		</select>
-		<calendar activity="activity"></calendar>
+		<fit-calendar activity="activity"></fit-calendar>
 	</div>
 
 	<script type="text/javascript" src="lib/angular/angular.js"></script>
@@ -29,6 +33,7 @@
 	<script type="text/javascript" src="scripts/fit.js"></script>
 	<script type="text/javascript" src="scripts/fit_controller.js"></script>
 	<script type="text/javascript" src="scripts/fit_calendar.js"></script>
+	<script type="text/javascript" src="scripts/fit_cell.js"></script>
 	<script type="text/javascript" src="scripts/fit_api.js"></script>
 </body>
 </html>

@@ -8,11 +8,12 @@ fit.factory("api", function(){
 				{ id: 2, name: "Bench press"}
 			];
 		},
-		getActivity: function(activity, month){
+		getActivity: function(activity, year, month){
 			if(month === 4){
 				if(activity === 1){
 					return {
 						name: "Running",
+						year: year,
 						month: month,
 						unit: "m",
 						hits: [
@@ -34,6 +35,7 @@ fit.factory("api", function(){
 				else if(activity === 2){
 					return {
 						name: "Bench press",
+						year: year,
 						month: month,
 						unit: "kg",
 						hits: [
@@ -53,10 +55,11 @@ fit.factory("api", function(){
 					};
 				}
 			}
-			else if(month === 5){
+			else if(month === 1){
 				if(activity === 1){
 					return {
 						name: "Running",
+						year: year,
 						month: month,
 						unit: "m",
 						hits: [
@@ -78,6 +81,7 @@ fit.factory("api", function(){
 				else if(activity === 2){
 					return {
 						name: "Bench press",
+						year: year,
 						month: month,
 						unit: "kg",
 						hits: [
@@ -95,6 +99,26 @@ fit.factory("api", function(){
 							}
 						]
 					};
+				}
+			}
+			else {
+				if(activity === 1){
+					return {
+						name: "Running",
+						year: year,
+						month: month,
+						unit: "m",
+						hits: []
+					}
+				}
+				else if(activity === 2){
+					return {
+						name: "Bench press",
+						year: year,
+						month: month,
+						unit: "kg",
+						hits: []
+					}
 				}
 			}
 		}

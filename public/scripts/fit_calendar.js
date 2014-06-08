@@ -1,6 +1,6 @@
 "use strict";
 
-fit.directive("calendar", ["calendarService", function(calendarService){
+fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 	return {
 		restrict: "E",
 		replace: true,
@@ -10,47 +10,54 @@ fit.directive("calendar", ["calendarService", function(calendarService){
 		},
 
 		link: function(scope){
-			scope.calendar = {
-				cells: new Array(42),
-				dayShortNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-				clickOnDay: function(day){
-					console.log(scope.activity);
-					return scope.activity;
-				}
-			};
-
-			scope.majom = function(){
-				return "majom";
-			};
-
-			for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
-				scope.calendar.cells[i] = {
-					day: i
-				};
-			}
+			scope.dayShortNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 			scope.$watch("activity", function(newActivity){
-				for(var i = 0, l = scope.calendar.cells.length; i < l; i++){
-					scope.calendar.cells[i].hit = null;
+				scope.weeks = calendarService.getWeeksArray(newActivity.year, newActivity.month);
+				scope.cells = new Array(scope.weeks.length * 7);
+				var dayOffset = calendarService.getFirstDayOffset(newActivity.year, newActivity.month);
+
+				for(var i = 0, l = scope.cells.length; i <= l; i++){
+					scope.cells[i] = {
+						day: calendarService.setDay(i, scope.activity.year, scope.activity.month),
+						hit: null
+					};
 				}
-				var dayShift = calendarService.getFirstDay();
-				for(var i = 0, l = newActivity.hits.length; i < l; i++){
-					scope.calendar.cells[newActivity.hits[i].day + dayShift].hit = newActivity.hits[i].quantity + scope.activity.unit;
+
+				for(i = 0, l = newActivity.hits.length; i < l; i++){
+					scope.cells[newActivity.hits[i].day + dayOffset].hit = newActivity.hits[i].quantity + scope.activity.unit;
 				}
 			});
 		}
 	};
 }]);
 
-fit.factory("calendarService", function(){
+fit.factory("fitCalendarService", function(){
 	return {
-		getFirstDay: function(year, month){
-			var firstDay = new Date(year, month, 1);
+		getFirstDayOffset: function(year, month){
+			var firstDay = new Date(year, month - 1, 1);
 			return convertDayNameToNumber(firstDay.toString().substring(0, 3));
 		},
-		getLastDay: function(year, month){
-			var lastDay = new Date(year, month + 1, 0);
+		getLastDayOffset: function(year, month){
+			var lastDay = new Date(year, month, 0);
 			return convertDayNameToNumber(lastDay.toString().substring(0, 3));
+		},
+		getWeeksArray: function(year, month){
+			var result = [];
+			var days = daysInMonth(year, month) + this.getFirstDayOffset(year, month);
+			for(var i = 0, l = Math.ceil(days / 7); i < l; i++){
+				result[i] = i + 1;
+			}
+			return result;
+		},
+		setDay: function(cell, year, month){
+			var day = cell - this.getFirstDayOffset(year, month);
+			if(day < 1 || day > daysInMonth(year, month)){
+				return 0;
+			}
+			else {
+				return day;
+			}
 		}
 	};
 
@@ -76,5 +83,9 @@ fit.factory("calendarService", function(){
 		else{
 			return 6;
 		}
+	}
+
+	function daysInMonth(year, month){
+		return new Date(year, month, 0).getDate();
 	}
 });

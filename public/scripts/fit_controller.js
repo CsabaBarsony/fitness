@@ -6,25 +6,29 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	scope.selectedActivity = scope.activities[0];
 
 	scope.months = [
-		{ id: 0, name: "Jan" },
-		{ id: 1, name: "Feb" },
-		{ id: 2, name: "Mar" },
-		{ id: 3, name: "Apr" },
-		{ id: 4, name: "May" },
-		{ id: 5, name: "Jun" },
-		{ id: 6, name: "Jul" },
-		{ id: 7, name: "Aug" },
-		{ id: 8, name: "Sep" },
-		{ id: 9, name: "Oct" },
-		{ id: 10, name: "Nov" },
-		{ id: 11, name: "Dec" }
+		{ id: 1, name: "Jan" },
+		{ id: 2, name: "Feb" },
+		{ id: 3, name: "Mar" },
+		{ id: 4, name: "Apr" },
+		{ id: 5, name: "May" },
+		{ id: 6, name: "Jun" },
+		{ id: 7, name: "Jul" },
+		{ id: 8, name: "Aug" },
+		{ id: 9, name: "Sep" },
+		{ id: 10, name: "Oct" },
+		{ id: 11, name: "Nov" },
+		{ id: 12, name: "Dec" }
 	];
 
-	scope.selectedMonth = scope.months[5];
+	scope.selectedMonth = scope.months[4];
 
-	scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedMonth.id);
+	scope.years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
 
-	scope.changeActivityOrMonth = function(){
-		scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedMonth.id);
+	scope.selectedYear = scope.years[0];
+
+	scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedYear, scope.selectedMonth.id);
+
+	scope.optionsChange = function(){
+		scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedYear, scope.selectedMonth.id);
 	};
 }]);
