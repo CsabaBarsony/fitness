@@ -9,19 +9,19 @@ fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 			cell: "="
 		},
 		link: function(scope){
-			scope.setDay = function(){
+			scope.formatDay = function(){
 				if(scope.cell.day > 0){
 					return scope.cell.day;
 				}
 			};
 
-			scope.setHit = function(){
+			scope.formatHit = function(){
 				if(scope.cell.quantity){
 					return scope.cell.quantity + scope.cell.unit;
 				}
 			};
 
-			scope.dayClick = function(){
+			scope.createHit = function(){
 				var quantity = prompt("New hit at " + scope.cell.year + "." + scope.cell.month + "." + scope.cell.day + " (" + scope.cell.unit + ")", "");
 				var hit = {
 					year: scope.cell.year,
@@ -31,7 +31,11 @@ fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 					unit: scope.cell.unit,
 					quantity: quantity
 				};
-				api.saveHit(hit);
+				api.createHit(hit);
+			};
+
+			scope.updateHit = function(){
+				console.log("update");
 			};
 		}
 	}

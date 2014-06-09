@@ -1,4 +1,10 @@
-<div ng-click="dayClick()">
-	{{setDay()}}<br />
-	{{setHit()}}
+<div>
+	<div ng-click="createHit()" ng-hide="cell.quantity">
+		{{formatDay()}}<br />
+		{{formatHit()}}
+	</div>
+	<div ng-click="updateHit()" ng-show="cell.quantity">
+		{{formatDay()}}<br />
+		{{formatHit()}}
+	</div>
 </div>
