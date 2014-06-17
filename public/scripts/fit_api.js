@@ -1,15 +1,31 @@
 "use strict";
 
-fit.factory("api", function(){
+fit.factory("api", ["$http", function(http){
 	return {
+		testApi: function(){
+			http({ method: "GET", url: "/test" }).
+				success(function(data){
+					console.log(data);
+				}).
+				error(function(data){
+					console.log(data);
+				});
+		},
 		getActivities: function(){
 			return [
 				{ id: 1, name: "Running" },
 				{ id: 2, name: "Bench press"}
 			];
 		},
-		saveHit: function(hit){
-			console.log("Hit saved: " + JSON.stringify(hit, null, 4));
+		createHit: function(hit){
+			var data = JSON.stringify(hit, null, 4);
+			http({ method: "GET", url: "/hit/create", data: data }).
+				success(function(data){
+					console.log(data);
+				}).
+				error(function(data){
+					console.log(data);
+				});
 		},
 		getActivity: function(activity, year, month){
 			if(month === 4){
@@ -126,4 +142,4 @@ fit.factory("api", function(){
 			}
 		}
 	};
-});
+}]);

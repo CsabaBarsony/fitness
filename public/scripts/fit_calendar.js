@@ -92,3 +92,14 @@ fit.factory("fitCalendarService", function(){
 		return new Date(year, month, 0).getDate();
 	}
 });
+
+fit.directive("test", function(api){
+	return {
+		template: "<button ng-click='testApi()'>Test</button>",
+		link: function(scope){
+			scope.testApi = function(){
+				api.testApi();
+			};
+		}
+	}
+});
