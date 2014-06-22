@@ -17,7 +17,7 @@ fit.directive("fitCell", ["api", function(api){
 
 			scope.formatHit = function(){
 				if(scope.cell.quantity){
-					return scope.cell.quantity + scope.cell.unit;
+					return scope.cell.quantity + " " + scope.cell.unit;
 				}
 			};
 

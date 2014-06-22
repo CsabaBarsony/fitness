@@ -78,5 +78,7 @@ describe("Calendar service", function(){
 		expect(calendarService.setPresent(2014, 6, 9)).toBe(-1);
 		expect(calendarService.setPresent(2014, 6, 10)).toBe(0);
 		expect(calendarService.setPresent(2014, 6, 11)).toBe(1);
+		expect(calendarService.setPresent(2013, 6, 11)).toBe(-1);
+		expect(calendarService.setPresent(2015, 6, 9)).toBe(1);
 	});
 });

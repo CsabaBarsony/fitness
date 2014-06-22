@@ -58,14 +58,9 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 			throw new Error("FitControllerService.createActivity - too long Activity name");
 		}
 
-		var unit = prompt("What is the Unit of the Activity?");
+		var unit = prompt("What is the Unit of the Activity? (Optional)");
 
 		if(unit === null){
-			return;
-		}
-
-		if(unit === ""){
-			alert("Unit cannot be empty!");
 			return;
 		}
 
@@ -73,9 +68,68 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 			throw new Error("FitControllerService.createActivity - too long Unit name");
 		}
 
-		api.createActivity(name, unit);
+		var selectedActivity = api.createActivity(name, unit);
+
+		if(!selectedActivity){
+			throw new Error("FitController.createActivity() - error while creating new Activity");
+		}
 
 		scope.activities = api.readActivities();
+
+		scope.selectedActivity = selectedActivity.name;
+
+		refreshActivity();
+	};
+
+	scope.updateActivity = function(){
+		var name = prompt("What is the new name of the Activity? (" + scope.selectedActivity + ")");
+
+		if(name === null){
+			return;
+		}
+
+		if(name.length < 3){
+			alert("Activity name must be at least 3 characters long!");
+			return;
+		}
+
+		if(name.length > 128){
+			throw new Error("FitControllerService.createActivity - too long Activity name")
+		}
+
+		var unit = prompt("What is the new Unit of the Activity? (Optional)");
+
+		if(unit === null){
+			return;
+		}
+
+		if(unit.length > 128){
+			throw new Error("FitControllerService.createActivity - too long Unit name");
+		}
+
+		var selectedActivity = api.updateActivity(scope.selectedActivity, name, unit);
+
+		if(!selectedActivity){
+			throw new Error("FitController.updateActivity() - error while saving new Activity");
+		}
+
+		scope.activities = api.readActivities();
+
+		scope.selectedActivity = selectedActivity;
+	};
+
+	scope.deleteActivity = function(){
+		if(!confirm("Delete Activity '" + scope.selectedActivity + "'?")){
+			return;
+		}
+
+		if(api.deleteActivity(scope.selectedActivity)){
+			scope.activities = api.readActivities();
+
+			scope.selectedActivity = scope.activities[0];
+
+			refreshActivity();
+		}
 	};
 
 	refreshActivity();

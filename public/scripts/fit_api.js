@@ -1,17 +1,29 @@
 "use strict";
 
-fit.factory("api", [function(){
+fit.factory("api", ["$http", function(http){
 	var api = {
-		createActivity: function(name, unit){
-			this.activities.push({ name: name, unit: unit, hits: [] });
+		get: function(){
+			http({ method: 'GET', url: '/users' }).
+				success(function(data) {
+					console.log(data);
+				}).
+				error(function(data) {
+					console.log(data);
+				});
 		},
-
-		readActivities: function(){
-			var result = [];
-			for(var i = 0, l = this.activities.length; i < l; i++){
-				result.push(this.activities[i].name);
-			}
-			return result;
+		set: function(data){
+			http({ method: "POST", url: "/users", data: data }).
+				success(function(data){
+					console.log(data);
+				}).
+				error(function(data){
+					console.log(data);
+				});
+		},
+		createActivity: function(name, unit){
+			var activity = { name: name, unit: unit, hits: [] }
+			this.activities.push(activity);
+			return activity;
 		},
 
 		readActivity: function(name, year, month){
@@ -22,6 +34,10 @@ fit.factory("api", [function(){
 					activity = this.activities[i];
 					break;
 				}
+			}
+
+			if(activity === null){
+				return { name: "", unit: "", year: year, month: month, hits: [] };
 			}
 
 			var result = { name: activity.name, unit: activity.unit, year: year, month: month, hits: [] };
@@ -35,6 +51,37 @@ fit.factory("api", [function(){
 				}
 			}
 
+			return result;
+		},
+
+		updateActivity: function(oldName, newName, unit){
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === oldName){
+					this.activities[i].name = newName;
+					this.activities[i].unit = unit;
+					return newName;
+				}
+			}
+
+			throw new Error("FitApi.updateActivity() - Activity " + oldName + " doesn't exist");
+		},
+
+		deleteActivity: function(name){
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					this.activities.splice(i, 1);
+					return true;
+				}
+			}
+
+			throw new Error("FitApi.deleteActivity() - Activity " + name + " doesn't exist");
+		},
+
+		readActivities: function(){
+			var result = [];
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				result.push(this.activities[i].name);
+			}
 			return result;
 		},
 
@@ -120,7 +167,7 @@ fit.factory("api", [function(){
 		},
 
 		activities: [
-			{
+			/*{
 				name: "Running",
 				unit: "m",
 				hits: [
@@ -141,7 +188,7 @@ fit.factory("api", [function(){
 					{ date: "2014-06-10", quantity: 60 },
 					{ date: "2014-06-15", quantity: 65 }
 				]
-			}
+			}*/
 		]
 	};
 
