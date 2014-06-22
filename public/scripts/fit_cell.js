@@ -68,6 +68,18 @@ fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 
 				scope.$emit("cellChanged");
 			};
+
+			scope.deleteHit = function(){
+				if(!confirm("Delete Hit? (" + scope.cell.quantity + scope.cell.unit + ")")){
+					return;
+				}
+
+				if(!api.deleteHit(scope.cell.activity, scope.cell.year, scope.cell.month, scope.cell.day)){
+					throw new Error("FitCell.deleteHit() - Error while deleting Hit");
+				}
+
+				scope.$emit("cellChanged");
+			};
 		}
 	}
 }]);

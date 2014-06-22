@@ -93,6 +93,32 @@ fit.factory("api", [function(){
 			throw new Error("FitApi.createHit() - hit with date: " + createDate(year, month, day) + " doesn't exist");
 		},
 
+		deleteHit: function(name, year, month, day){
+			var activity = null;
+
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					activity = this.activities[i];
+					break;
+				}
+			}
+
+			if(!activity){
+				throw new Error("FitApi.createHit() - activity '" + name + "' doesn't exist");
+			}
+
+			var date = createDate(year, month, day);
+
+			for(i = 0, l = activity.hits.length; i < l; i++){
+				if(activity.hits[i].date === date){
+					activity.hits.splice(i, 1);
+					return true;
+				}
+			}
+
+			throw new Error("FitApi.deleteHit() - hit with date: " + createDate(year, month, day) + " doesn't exist");
+		},
+
 		activities: [
 			{
 				name: "Running",

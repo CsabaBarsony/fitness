@@ -24,11 +24,19 @@ describe("Fit Api", function(){
 		service.createActivity("Wall climbing", "min");
 	});
 
+	it("deleteHit() should work properly...", function(){
+		service.deleteHit("Running", 2014, 5, 21);
+	});
+
 	it("createHit() should throw error when Hit with date already exists", function(){
 		expect(function(){ service.createHit("Running", 2014, 5, 21, 1234) }).toThrow(new Error("FitApi.createHit() - hit with date: 2014-05-21 already exists"));
 	});
 
 	it("updateHit() should throw error when Hit with date doesn't exists", function(){
 		expect(function(){service.updateHit("Running", 2014, 5, 20, 1234) }).toThrow(new Error("FitApi.createHit() - hit with date: 2014-05-20 doesn't exist"));
+	});
+
+	it("deleteHit() should throw error when Hit with date doesn't exists", function(){
+		expect(function(){service.deleteHit("Running", 2014, 5, 20, 1234) }).toThrow(new Error("FitApi.deleteHit() - hit with date: 2014-05-20 doesn't exist"));
 	});
 });

@@ -22,6 +22,7 @@
 						ng-options="month.name for month in months"
 						ng-change="optionsChange()">
 		</select>
+		<button ng-click="createActivity()">New Activity</button>
 		<fit-calendar activity="activity"></fit-calendar>
 	</div>
 
