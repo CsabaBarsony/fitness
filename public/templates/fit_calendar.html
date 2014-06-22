@@ -7,7 +7,7 @@
 	<tbody>
 		<tr ng-repeat="week in weeks" id="fit-week-{{week}}">
 			<td ng-repeat="day in [1, 2, 3, 4, 5, 6, 7]" id="fit-cell-{{cell}}" class="fit-cell" ng-init="cell = (week - 1) * 7 + day">
-				<fit-cell cell="cells[cell]"></fit-cell>
+				<fit-cell cell="cells[cell]" ng-if="cells[cell]"></fit-cell>
 			</td>
 		</tr>
 	</tbody>

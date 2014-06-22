@@ -23,19 +23,50 @@ fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 
 			scope.createHit = function(){
 				var quantity = prompt("New hit at " + scope.cell.year + "." + scope.cell.month + "." + scope.cell.day + " (" + scope.cell.unit + ")", "");
-				var hit = {
-					year: scope.cell.year,
-					month: scope.cell.month,
-					day: scope.cell.day,
-					activity: scope.cell.activity,
-					unit: scope.cell.unit,
-					quantity: quantity
-				};
-				api.createHit(hit);
+
+				if(quantity === null){
+					return;
+				}
+
+				if(quantity === ""){
+					alert("Quantity cannot be empty!");
+					return;
+				}
+
+				if(isNaN(quantity)){
+					alert("Quantity must be a number!");
+					return;
+				}
+
+				if(!api.createHit(scope.cell.activity, scope.cell.year, scope.cell.month, scope.cell.day, quantity)){
+					throw new Error("FitCell.createHit() - Error while creating new Hit");
+				}
+
+				scope.$emit("cellChanged");
 			};
 
 			scope.updateHit = function(){
-				console.log("update");
+				var quantity = prompt("Update hit at " + scope.cell.year + "." + scope.cell.month + "." + scope.cell.day + " (" + scope.cell.quantity + scope.cell.unit + ")", "");
+
+				if(quantity === null){
+					return;
+				}
+
+				if(quantity === ""){
+					alert("Quantity cannot be empty!");
+					return;
+				}
+
+				if(isNaN(quantity)){
+					alert("Quantity must be a number!");
+					return;
+				}
+
+				if(!api.updateHit(scope.cell.activity, scope.cell.year, scope.cell.month, scope.cell.day, quantity)){
+					throw new Error("FitCell.createHit() - Error while creating new Hit");
+				}
+
+				scope.$emit("cellChanged");
 			};
 		}
 	}

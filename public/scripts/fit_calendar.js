@@ -10,6 +10,8 @@ fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 		},
 
 		link: function(scope){
+
+
 			scope.dayShortNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 			scope.$watch("activity", function(newActivity){
@@ -90,16 +92,5 @@ fit.factory("fitCalendarService", function(){
 
 	function daysInMonth(year, month){
 		return new Date(year, month, 0).getDate();
-	}
-});
-
-fit.directive("test", function(api){
-	return {
-		template: "<button ng-click='testApi()'>Test</button>",
-		link: function(scope){
-			scope.testApi = function(){
-				api.testApi();
-			};
-		}
 	}
 });

@@ -1,7 +1,7 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
-	scope.activities = api.getActivities();
+	scope.activities = api.readActivities();
 
 	scope.selectedActivity = scope.activities[0];
 
@@ -26,9 +26,17 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 
 	scope.selectedYear = scope.years[0];
 
-	scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedYear, scope.selectedMonth.id);
-
 	scope.optionsChange = function(){
-		scope.activity = api.getActivity(scope.selectedActivity.id, scope.selectedYear, scope.selectedMonth.id);
+		refreshActivity();
 	};
+
+	scope.$on("cellChanged", function(){
+		refreshActivity();
+	});
+
+	function refreshActivity(){
+		scope.activity = api.readActivity(scope.selectedActivity, scope.selectedYear, scope.selectedMonth.id);
+	}
+
+	refreshActivity();
 }]);

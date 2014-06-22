@@ -1,145 +1,169 @@
 "use strict";
 
-fit.factory("api", ["$http", function(http){
-	return {
-		testApi: function(){
-			http({ method: "GET", url: "/test" }).
-				success(function(data){
-					console.log(data);
-				}).
-				error(function(data){
-					console.log(data);
-				});
+fit.factory("api", [function(){
+	var api = {
+		createActivity: function(name, unit){
+			this.activities.push({ name: name, unit: unit, hits: [] });
 		},
-		getActivities: function(){
-			return [
-				{ id: 1, name: "Running" },
-				{ id: 2, name: "Bench press"}
-			];
+
+		readActivities: function(){
+			var result = [];
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				result.push(this.activities[i].name);
+			}
+			return result;
 		},
-		createHit: function(hit){
-			var data = JSON.stringify(hit, null, 4);
-			http({ method: "GET", url: "/hit/create", data: data }).
-				success(function(data){
-					console.log(data);
-				}).
-				error(function(data){
-					console.log(data);
-				});
-		},
-		getActivity: function(activity, year, month){
-			if(month === 4){
-				if(activity === 1){
-					return {
-						name: "Running",
-						year: year,
-						month: month,
-						unit: "m",
-						hits: [
-							{
-								day: 2,
-								quantity: 2500
-							},
-							{
-								day: 12,
-								quantity: 2700
-							},
-							{
-								day: 16,
-								quantity: 3000
-							}
-						]
-					};
-				}
-				else if(activity === 2){
-					return {
-						name: "Bench press",
-						year: year,
-						month: month,
-						unit: "kg",
-						hits: [
-							{
-								day: 3,
-								quantity: 60
-							},
-							{
-								day: 10,
-								quantity: 70
-							},
-							{
-								day: 19,
-								quantity: 67
-							}
-						]
-					};
+
+		readActivity: function(name, year, month){
+			var activity = null;
+
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					activity = this.activities[i];
+					break;
 				}
 			}
-			else if(month === 1){
-				if(activity === 1){
-					return {
-						name: "Running",
-						year: year,
-						month: month,
-						unit: "m",
-						hits: [
-							{
-								day: 10,
-								quantity: 3000
-							},
-							{
-								day: 20,
-								quantity: 2700
-							},
-							{
-								day: 23,
-								quantity: 3100
-							}
-						]
-					};
-				}
-				else if(activity === 2){
-					return {
-						name: "Bench press",
-						year: year,
-						month: month,
-						unit: "kg",
-						hits: [
-							{
-								day: 5,
-								quantity: 70
-							},
-							{
-								day: 9,
-								quantity: 70
-							},
-							{
-								day: 13,
-								quantity: 75
-							}
-						]
-					};
+
+			var result = { name: activity.name, unit: activity.unit, year: year, month: month, hits: [] };
+
+			for(i = 0, l = activity.hits.length; i < l; i++){
+				var date = activity.hits[i].date;
+				var y = +date.substr(0, 4);
+				var m = +date.substr(5, 2);
+				if(y === year && m === month){
+					result.hits.push({ day: getDay(activity.hits[i].date), quantity: activity.hits[i].quantity });
 				}
 			}
-			else {
-				if(activity === 1){
-					return {
-						name: "Running",
-						year: year,
-						month: month,
-						unit: "m",
-						hits: []
-					}
+
+			return result;
+		},
+
+		createHit: function(name, year, month, day, quantity){
+			validateParameters("createHit", [year, month, day, quantity]);
+
+			var activity = null;
+
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					activity = this.activities[i];
+					break;
 				}
-				else if(activity === 2){
-					return {
-						name: "Bench press",
-						year: year,
-						month: month,
-						unit: "kg",
-						hits: []
-					}
+			}
+
+			if(!activity){
+				throw new Error("FitApi.createHit() - activity '" + name + "' doesn't exist");
+			}
+
+			for(i = 0, l = activity.hits.length; i < l; i++){
+				if(activity.hits[i].date === createDate(year, month, day)){
+					throw new Error("FitApi.createHit() - hit with date: " + activity.hits[i].date + " already exists");
 				}
+			}
+
+			activity.hits.push({ date: createDate(year, month, day), quantity: quantity });
+
+			return true;
+		},
+
+		updateHit: function(name, year, month, day, quantity){
+			validateParameters("updateHit", [year, month, day, quantity]);
+
+			var activity = null;
+
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					activity = this.activities[i];
+					break;
+				}
+			}
+
+			if(!activity){
+				throw new Error("FitApi.createHit() - activity '" + name + "' doesn't exist");
+			}
+
+			var hit = null;
+
+			for(i = 0, l = activity.hits.length; i < l; i++){
+				if(activity.hits[i].date === createDate(year, month, day)){
+					activity.hits[i].quantity = quantity;
+					return true;
+				}
+			}
+
+			throw new Error("FitApi.createHit() - hit with date: " + createDate(year, month, day) + " doesn't exist");
+		},
+
+		activities: [
+			{
+				name: "Running",
+				unit: "m",
+				hits: [
+					{ date: "2014-05-21", quantity: 2000 },
+					{ date: "2014-06-01", quantity: 2100 },
+					{ date: "2014-06-02", quantity: 2200 },
+					{ date: "2014-06-11", quantity: 2400 },
+					{ date: "2014-06-20", quantity: 2600 }
+				]
+			},
+			{
+				name: "Bench press",
+				unit: "kg",
+				hits: [
+					{ date: "2014-05-11", quantity: 55 },
+					{ date: "2014-06-03", quantity: 60 },
+					{ date: "2014-06-05", quantity: 55 },
+					{ date: "2014-06-10", quantity: 60 },
+					{ date: "2014-06-15", quantity: 65 }
+				]
+			}
+		]
+	};
+
+	function validateParameters(functionName, parameters){
+		if(functionName === "createHit" || functionName === "updateHit"){
+			if(parameters[0] < 2014){
+				throw new Error("FitApi.createHit() - year must be 2014 or greater");
+			}
+
+			if(parameters[1] < 1 || parameters[1] > 12){
+				throw new Error("FitApi.createHit() - month must be between 1 and 12 inclusive");
+			}
+
+			if(parameters[2] < 1 || parameters[2] > 31){
+				throw new Error("FitApi.createHit() - day must be between 1 and 31 inclusive");
+			}
+
+			if(isNaN(parameters[3])){
+				throw  new Error("FitApi.createHit() - quantity must be number");
 			}
 		}
-	};
+	}
+
+	function createDate(year, month, day){
+		var m = null;
+
+		if(month < 10){
+			m = "0" + month;
+		}
+		else {
+			m = "" + month;
+		}
+
+		var d = null;
+
+		if(day < 10){
+			d = "0" + day;
+		}
+		else {
+			d = "" + day;
+		}
+
+		return "" + year + "-" + m + "-" + d;
+	}
+
+	function getDay(date){
+		return +date.substr(8, 2);
+	}
+
+	return api;
 }]);
