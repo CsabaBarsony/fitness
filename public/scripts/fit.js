@@ -11,7 +11,7 @@ fit.directive("test", function(api){
 			};
 
 			scope.set = function(){
-				api.set({ name: "Csati" });
+				api.set({ name: "Márti" });
 			};
 		}
 	};

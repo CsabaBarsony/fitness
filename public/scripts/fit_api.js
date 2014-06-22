@@ -167,7 +167,7 @@ fit.factory("api", ["$http", function(http){
 		},
 
 		activities: [
-			/*{
+			{
 				name: "Running",
 				unit: "m",
 				hits: [
@@ -188,7 +188,7 @@ fit.factory("api", ["$http", function(http){
 					{ date: "2014-06-10", quantity: 60 },
 					{ date: "2014-06-15", quantity: 65 }
 				]
-			}*/
+			}
 		]
 	};
 
