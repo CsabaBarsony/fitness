@@ -30,14 +30,21 @@ describe("Calendar directive", function(){
 });
 
 describe("Calendar service", function(){
-	var calendarService;
+	var calendarService, dates;
 
 	beforeEach(function(){
 		module("fit");
 
-		inject(function(_fitCalendarService_){
+		inject(function(_fitCalendarService_, _dates_){
 			calendarService = _fitCalendarService_;
+			dates = _dates_;
 		});
+
+		// 1402394400: 2014.06.10 10:00:00
+		spyOn(dates, "now").andReturn(1402394400);
+		spyOn(dates, "getYear").andReturn(2014);
+		spyOn(dates, "getMonth").andReturn(6);
+		spyOn(dates, "getDay").andReturn(10);
 	});
 
 	it("should calculate first and last day of month", function(){
@@ -65,5 +72,11 @@ describe("Calendar service", function(){
 		expect(calendarService.setDay(3, 2014, 1)).toBe(1);
 		expect(calendarService.setDay(33, 2014, 1)).toBe(31);
 		expect(calendarService.setDay(34, 2014, 1)).toBe(0);
+	});
+
+	it("should set present", function(){
+		expect(calendarService.setPresent(2014, 6, 9)).toBe(-1);
+		expect(calendarService.setPresent(2014, 6, 10)).toBe(0);
+		expect(calendarService.setPresent(2014, 6, 11)).toBe(1);
 	});
 });

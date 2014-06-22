@@ -1,6 +1,6 @@
 "use strict";
 
-fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
+fit.directive("fitCell", ["api", function(api){
 	return {
 		restrict: "E",
 		replace: true,
@@ -83,7 +83,3 @@ fit.directive("fitCell", ["fitCellService", "api", function(cellService, api){
 		}
 	}
 }]);
-
-fit.factory("fitCellService", function(){
-
-});

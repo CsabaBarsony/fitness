@@ -20,12 +20,14 @@ fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 				var dayOffset = calendarService.getFirstDayOffset(newActivity.year, newActivity.month);
 
 				for(var i = 0, l = scope.cells.length; i <= l; i++){
+					var day = calendarService.setDay(i, scope.activity.year, scope.activity.month);
 					scope.cells[i] = {
-						day: calendarService.setDay(i, scope.activity.year, scope.activity.month),
+						day: day,
 						unit: scope.activity.unit,
 						month: scope.activity.month,
 						year: scope.activity.year,
-						activity: scope.activity.name
+						activity: scope.activity.name,
+						present: calendarService.setPresent(scope.activity.year, scope.activity.month, day)
 					};
 				}
 
@@ -37,7 +39,7 @@ fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 	};
 }]);
 
-fit.factory("fitCalendarService", function(){
+fit.factory("fitCalendarService", ["dates", function(dates){
 	return {
 		getFirstDayOffset: function(year, month){
 			var firstDay = new Date(year, month - 1, 1);
@@ -63,6 +65,34 @@ fit.factory("fitCalendarService", function(){
 			else {
 				return day;
 			}
+		},
+		setPresent: function(year, month, day){
+			if(day === 0){
+				return -1;
+			}
+
+			if(dates.getYear() > year){
+				return -1;
+			}
+			else if(dates.getYear() < year){
+				return 1;
+			}
+
+			if(dates.getMonth() > month){
+				return -1;
+			}
+			else if(dates.getMonth() < month){
+				return 1;
+			}
+			
+			if(dates.getDay() > day){
+				return -1;
+			}
+			else if(dates.getDay() < day){
+				return 1;
+			}
+
+			return 0;
 		}
 	};
 
@@ -93,4 +123,4 @@ fit.factory("fitCalendarService", function(){
 	function daysInMonth(year, month){
 		return new Date(year, month, 0).getDate();
 	}
-});
+}]);
