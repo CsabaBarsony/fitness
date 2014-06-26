@@ -126,6 +126,8 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		scope.activities = api.readActivities();
 
 		scope.selectedActivity = selectedActivity;
+
+		refreshActivity();
 	};
 
 	scope.deleteActivity = function(){

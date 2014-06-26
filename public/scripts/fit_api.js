@@ -3,7 +3,7 @@
 fit.factory("api", ["$http", function(http){
 	var api = {
 		get: function(){
-			http({ method: 'GET', url: '/users' }).
+			http({ method: 'GET', url: '/data?username=csati&token=EDcniPYGTq' }).
 				success(function(data) {
 					console.log(data);
 				}).
@@ -22,6 +22,16 @@ fit.factory("api", ["$http", function(http){
 				});
 		},
 
+		users: function(){
+			http({ method: 'GET', url: '/users' }).
+				success(function(data) {
+					console.log(data);
+				}).
+				error(function(data) {
+					console.log(data);
+				});
+		},
+
 		createActivity: function(name, unit){
 			var activity = this.getActivity(name);
 
@@ -29,7 +39,7 @@ fit.factory("api", ["$http", function(http){
 				throw new Error("FitApi.createActivity() - Activity " + name + " already exist");
 			}
 
-			activity = { name: name, unit: unit, hits: [] }
+			activity = { name: name, unit: unit, hits: [] };
 			this.activities.push(activity);
 			return activity;
 		},
