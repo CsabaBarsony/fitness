@@ -11,6 +11,7 @@ fit.factory("api", ["$http", function(http){
 					console.log(data);
 				});
 		},
+
 		set: function(data){
 			http({ method: "POST", url: "/users", data: data }).
 				success(function(data){
@@ -20,21 +21,21 @@ fit.factory("api", ["$http", function(http){
 					console.log(data);
 				});
 		},
+
 		createActivity: function(name, unit){
-			var activity = { name: name, unit: unit, hits: [] }
+			var activity = this.getActivity(name);
+
+			if(activity){
+				throw new Error("FitApi.createActivity() - Activity " + name + " already exist");
+			}
+
+			activity = { name: name, unit: unit, hits: [] }
 			this.activities.push(activity);
 			return activity;
 		},
 
 		readActivity: function(name, year, month){
-			var activity = null;
-
-			for(var i = 0, l = this.activities.length; i < l; i++){
-				if(this.activities[i].name === name){
-					activity = this.activities[i];
-					break;
-				}
-			}
+			var activity = this.getActivity(name);
 
 			if(activity === null){
 				return { name: "", unit: "", year: year, month: month, hits: [] };
@@ -42,7 +43,7 @@ fit.factory("api", ["$http", function(http){
 
 			var result = { name: activity.name, unit: activity.unit, year: year, month: month, hits: [] };
 
-			for(i = 0, l = activity.hits.length; i < l; i++){
+			for(var i = 0, l = activity.hits.length; i < l; i++){
 				var date = activity.hits[i].date;
 				var y = +date.substr(0, 4);
 				var m = +date.substr(5, 2);
@@ -77,6 +78,19 @@ fit.factory("api", ["$http", function(http){
 			throw new Error("FitApi.deleteActivity() - Activity " + name + " doesn't exist");
 		},
 
+		getActivity: function(name){
+			var activity = null;
+
+			for(var i = 0, l = this.activities.length; i < l; i++){
+				if(this.activities[i].name === name){
+					activity = this.activities[i];
+					break;
+				}
+			}
+
+			return activity;
+		},
+
 		readActivities: function(){
 			var result = [];
 			for(var i = 0, l = this.activities.length; i < l; i++){
@@ -88,20 +102,13 @@ fit.factory("api", ["$http", function(http){
 		createHit: function(name, year, month, day, quantity){
 			validateParameters("createHit", [year, month, day, quantity]);
 
-			var activity = null;
-
-			for(var i = 0, l = this.activities.length; i < l; i++){
-				if(this.activities[i].name === name){
-					activity = this.activities[i];
-					break;
-				}
-			}
+			var activity = this.getActivity(name);
 
 			if(!activity){
 				throw new Error("FitApi.createHit() - activity '" + name + "' doesn't exist");
 			}
 
-			for(i = 0, l = activity.hits.length; i < l; i++){
+			for(var i = 0, l = activity.hits.length; i < l; i++){
 				if(activity.hits[i].date === createDate(year, month, day)){
 					throw new Error("FitApi.createHit() - hit with date: " + activity.hits[i].date + " already exists");
 				}

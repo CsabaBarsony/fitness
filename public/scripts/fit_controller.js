@@ -58,6 +58,11 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 			throw new Error("FitControllerService.createActivity - too long Activity name");
 		}
 
+		if(api.getActivity(name)){
+			alert("Activity '" + name + "' already exist!");
+			return;
+		}
+
 		var unit = prompt("What is the Unit of the Activity? (Optional)");
 
 		if(unit === null){
@@ -95,6 +100,11 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 
 		if(name.length > 128){
 			throw new Error("FitControllerService.createActivity - too long Activity name")
+		}
+
+		if(api.getActivity(name)){
+			alert("Activity '" + name + "' already exist!");
+			return;
 		}
 
 		var unit = prompt("What is the new Unit of the Activity? (Optional)");
