@@ -2,23 +2,33 @@
 
 var log = angular.module("login", []);
 
-log.controller("LoginController", ["$scope", "$http", function(scope, http){
-	scope.username = "";
+log.controller("LoginController", ["$scope", "$http", "$window", function(scope, http, window){
+	scope.error = "";
 
-	scope.password = "";
+	var redirectReason = sessionStorage.getItem("redirectReason");
+
+	if(redirectReason === "0"){
+		scope.error = "You must be logged in.";
+		sessionStorage.setItem("redirectReason", "");
+	}
 
 	scope.submit = function(){
-		if(scope.username && scope.password){
-			http({ method: "POST", url: "/api/login", data: { username: scope.username, password: scope.password } }).
+		var username = document.getElementById("username").value;
+		var password = document.getElementById("password").value;
+
+		if(username && password){
+			http({ method: "POST", url: "/api/login", data: { username: username, password: password } }).
 				success(function(data){
-					console.log("Success! " + data);
+					sessionStorage.setItem("token", data.token);
+					window.location.href = "/";
 				}).
 				error(function(data){
+					scope.error = "Wrong username or password.";
 					console.log("Ajax error: " + data);
 				});
 		}
 		else {
-			alert("Wrong username and/or password!");
+			alert("Missing username and/or password!");
 		}
 	};
 }]);

@@ -1,9 +1,9 @@
 "use strict";
 
-fit.factory("api", ["$http", function(http){
+fit.factory("api", ["$http", "$window", function(http, window){
 	var api = {
 		get: function(){
-			http({ method: 'GET', url: '/data?username=csati&token=EDcniPYGTq' }).
+			http({ method: 'GET', url: '/data?username=csati&token=dswOFjFlI2' }).
 				success(function(data) {
 					console.log(data);
 				}).
@@ -26,6 +26,26 @@ fit.factory("api", ["$http", function(http){
 			http({ method: 'GET', url: '/users' }).
 				success(function(data) {
 					console.log(data);
+				}).
+				error(function(data) {
+					console.log(data);
+				});
+		},
+
+		authorize: function(){
+			http.defaults.headers.common["X-Auth-Token"] = sessionStorage.getItem("token");
+			http({ method: 'GET', url: '/api/authorize' });
+		},
+
+		logout: function(){
+			http({ method: 'GET', url: '/api/logout' }).
+				success(function(data) {
+					if(data.logoutSuccess === "1"){
+						window.location.href = "/login.html";
+					}
+					else {
+						console.log("Error while trying to log out.");
+					}
 				}).
 				error(function(data) {
 					console.log(data);

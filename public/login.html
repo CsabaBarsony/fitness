@@ -5,9 +5,11 @@
 	<title>Login</title>
 </head>
 <body ng-controller="LoginController">
-Username: <input type="text" ng-model="username" /><br />
-Password: <input type="password" ng-model="password" /><br />
-<button ng-click="submit()">Login</button>
+<p>{{error}}</p>
+Username: <input type="text" id="username" /><br />
+Password: <input type="password" id="password" /><br />
+<button ng-click="submit()">Login</button><br />
+<a href="/registration.html">registration</a>
 <script type="text/javascript" src="lib/angular/angular.js"></script>
 <script type="text/javascript" src="scripts/login.js"></script>
 </body>

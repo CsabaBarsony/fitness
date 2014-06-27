@@ -144,5 +144,9 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		}
 	};
 
+	scope.logout = function(){
+		api.logout();
+	};
+
 	refreshActivity();
 }]);

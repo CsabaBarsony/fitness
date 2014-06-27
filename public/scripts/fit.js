@@ -2,6 +2,24 @@
 
 var fit = angular.module("fit", []);
 
+fit.config(function($httpProvider){
+	$httpProvider.interceptors.push(function($q, $window){
+		return {
+			responseError: function(rejection){
+				if(rejection.status === 401){
+					sessionStorage.setItem("redirectReason", "0");
+					$window.location.href = "/login.html";
+				}
+				return $q.reject(rejection);
+			}
+		};
+	});
+});
+
+fit.run(function(api){
+	api.authorize();
+});
+
 fit.directive("test", function(api){
 	return {
 		template: "<button ng-click='get()'>Get</button><button ng-click='set()'>Set</button><button ng-click='users()'>Users</button>",

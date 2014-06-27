@@ -5,11 +5,18 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 var db = require("mongojs").connect("mydb", ["users"]);
-var tokenExpiration = 60000;
+var crypto = require("crypto");
+var key = "n1wkIGv7I89FzotJYEsaY0pdTOty8jyD1tQN3siK";
+var salt = "mC96BZ5wFz5XYIqJnKwnIdqVD2fBZE5AS5gh4GEV";
+
+var tokenExpiration = 600000;
+var tokenLength = 40;
+var portNumber = 8000;
+var tokenHeader = "x-auth-token";
 
 app.use(bodyParser.json());
 
-app.post("/api/register", function(req, res){
+app.post("/api/registration", function(req, res){
 	db.users.find({ username: req.body.username }, function(error, user){
 		if(error) {
 			res.send(500);
@@ -19,22 +26,31 @@ app.post("/api/register", function(req, res){
 			res.send(400);
 		}
 		else {
-			db.users.save({ username: req.body.username, password: req.body.password });
-			res.send(200);
+			var token = generateToken();
+			var passwordHash = crypto.createHmac("sha256", key).update(req.body.password + salt).digest("hex");
+			db.users.save({
+				username: req.body.username,
+				password: passwordHash,
+				token: token,
+				tokenExpiration: Date.now() + tokenExpiration,
+				activities: []
+			});
+			res.send({ token: token });
 		}
 	});
 });
 
 app.post("/api/login", function(req, res){
-	db.users.find({ username: req.body.username, password: req.body.password }, function(error, users){
+	var passwordHash = crypto.createHmac("sha256", key).update(req.body.password + salt).digest("hex");
+	db.users.find({ username: req.body.username, password: passwordHash }, function(error, users){
 		if(error){
 			res.send(500);
 		}
 		else if(users.length > 0){
-			var token = generateToken(10);
+			var token = generateToken();
 			var updateData = {
 				token: token,
-				timestamp: Date.now() + tokenExpiration
+				tokenExpiration: Date.now() + tokenExpiration
 			};
 			db.users.update({ username: req.body.username }, { $set: updateData }, function(error, updated){
 				if(error || !updated) console.log(error);
@@ -49,6 +65,30 @@ app.post("/api/login", function(req, res){
 	});
 });
 
+app.get("/api/authorize", function(req, res){
+	authorize(req.headers[tokenHeader], function(){
+		res.send(200);
+	}, function(){
+		res.send(401);
+	});
+});
+
+app.get("/api/logout", function(req, res){
+	authorize(req.headers[tokenHeader], function(){
+		db.users.update({ token: req.headers[tokenHeader] }, { $set: { tokenExpiration: 0 } }, function(error, users){
+			if(error){
+				console.log("DB Error - users.update() " + error);
+			}
+			else {
+				console.log("User logged out.");
+				res.send({ logoutSuccess: "1"});
+			}
+		});
+	}, function(){
+		res.send(401);
+	});
+});
+
 app.get('/users', function(req, res) {
 	db.users.find({}, function(error, users){
 		if(error || !users) console.log(error);
@@ -58,60 +98,48 @@ app.get('/users', function(req, res) {
 	});
 });
 
-app.post("/users", function(req, res){
-	db.users.save({ name: req.body.name }, function(err, saved){
-		if(err || !saved){
-			console.log(err);
-			console.log("Not saved");
-		}
-		else {
-			console.log("User saved");
-		}
-	});
-	res.send(200);
-});
-
 app.get("/data", function(req, res){
-	authorize(req.query.username, req.query.token, function(){
+	authorize(req.headers[tokenHeader], function(){
 		res.send("top secret data");
+	}, function(){
+		res.send(401);
 	});
 });
 
-function generateToken(length)
+function generateToken()
 {
 	var text = "";
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-	for( var i=0; i < length; i++ )
+	for(var i = 0; i < tokenLength; i++)
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 	return text;
 }
 
-function authorize(username, token, callback){
-	db.users.find({ username: username, token: token }, { timestamp: 1 }, function(error, users){
+function authorize(token, success, fail){
+	db.users.find({ token: token }, { tokenExpiration: 1 }, function(error, users){
 		if(error){
-			console.log("1: " + error);
+			console.log("DB Error - users.find(): " + error);
 		}
 
-		console.log(users);
-
-		if(users.length > 0 && users[0].timestamp > Date.now()){
-			db.users.update({ username: username }, { $set: { timestamp: (Date.now() + tokenExpiration) } }, function(error, users){
+		if(users.length > 0 && users[0].tokenExpiration > Date.now()){
+			db.users.update({ token: token }, { $set: { tokenExpiration: (Date.now() + tokenExpiration) } }, function(error, users){
 				if(error){
-					console.log("2: " + error);
+					console.log("DB Error - users.update() " + error);
 				}
 				else {
-					callback();
+					success();
 				}
 			});
 		}
 		else {
-			console.log("3: " + error);
+			console.log("Authorization failed");
+			fail();
 		}
 	});
 }
 
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.listen(8000);
+app.listen(portNumber);
