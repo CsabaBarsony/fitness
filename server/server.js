@@ -90,17 +90,22 @@ app.get("/api/logout", function(req, res){
 });
 
 app.get("/api/read_activities", function(req, res){
-	db.users.find({ token: req.headers[tokenHeader] }, { activities: 1 }, function(error, users){
-		if(error){
-			console.log(error);
-		}
-		else {
-			var result = [];
-			for(var i = 0, l = users[0].activities.length; i < l; i++){
-				result.push(users[0].activities[i].name);
+	authorize(req.headers[tokenHeader], function(username){
+		db.users.find({ username: username }, { activities: 1 }, function(error, users){
+			if(error){
+				console.log(error);
 			}
-			res.send(result);
-		}
+			else if(users){
+				var result = [];
+				for(var i = 0, l = users[0].activities.length; i < l; i++){
+					result.push(users[0].activities[i].name);
+				}
+				res.send(result);
+			}
+			else {
+				console.log("Error while getting Activities.");
+			}
+		});
 	});
 });
 

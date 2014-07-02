@@ -1,7 +1,7 @@
 "use strict";
 
-fit.factory("api", ["$http", "$window", "$q", function(http, window, q){
-	var version = "server";
+fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window, q, timeout){
+	var version = "local";
 
 	var server = {
 		users: function(){
@@ -105,24 +105,37 @@ fit.factory("api", ["$http", "$window", "$q", function(http, window, q){
 		},
 
 		readActivity: function(name, year, month){
-			var activity = this.getActivity(name);
+			var defer = q.defer();
 
-			if(activity === null){
-				return { name: "", unit: "", year: year, month: month, hits: [] };
-			}
+			var that = this;
 
-			var result = { name: activity.name, unit: activity.unit, year: year, month: month, hits: [] };
+			timeout(function(){
+				defer.notify("please wait...");
+			}, 0);
 
-			for(var i = 0, l = activity.hits.length; i < l; i++){
-				var date = activity.hits[i].date;
-				var y = +date.substr(0, 4);
-				var m = +date.substr(5, 2);
-				if(y === year && m === month){
-					result.hits.push({ day: getDay(activity.hits[i].date), quantity: activity.hits[i].quantity });
+			timeout(function(){
+				var activity = that.getActivity(name);
+
+				if(activity === null){
+					defer.resolve({ name: "", unit: "", year: year, month: month, hits: [] });
 				}
-			}
+				else {
+					var result = { name: activity.name, unit: activity.unit, year: year, month: month, hits: [] };
 
-			return result;
+					for(var i = 0, l = activity.hits.length; i < l; i++){
+						var date = activity.hits[i].date;
+						var y = +date.substr(0, 4);
+						var m = +date.substr(5, 2);
+						if(y === year && m === month){
+							result.hits.push({ day: getDay(activity.hits[i].date), quantity: activity.hits[i].quantity });
+						}
+					}
+
+					defer.resolve(activity);
+				}
+			}, 1000);
+
+			return defer.promise;
 		},
 
 		updateActivity: function(oldName, newName, unit){
@@ -162,11 +175,23 @@ fit.factory("api", ["$http", "$window", "$q", function(http, window, q){
 		},
 
 		readActivities: function(){
-			var result = [];
-			for(var i = 0, l = this.activities.length; i < l; i++){
-				result.push(this.activities[i].name);
-			}
-			return result;
+			var defer = q.defer();
+
+			var that = this;
+
+			timeout(function(){
+				defer.notify("please wait...");
+			}, 0);
+
+			timeout(function(){
+				var result = [];
+				for(var i = 0, l = that.activities.length; i < l; i++){
+					result.push(that.activities[i].name);
+				}
+				defer.resolve(result);
+			}, 1000);
+
+			return defer.promise;
 		},
 
 		createHit: function(name, year, month, day, quantity){
@@ -248,22 +273,22 @@ fit.factory("api", ["$http", "$window", "$q", function(http, window, q){
 				name: "Running",
 				unit: "m",
 				hits: [
-					{ date: "2014-05-21", quantity: 2000 },
-					{ date: "2014-06-01", quantity: 2100 },
-					{ date: "2014-06-02", quantity: 2200 },
-					{ date: "2014-06-11", quantity: 2400 },
-					{ date: "2014-06-20", quantity: 2600 }
+					{ date: "2014-06-21", quantity: 2000 },
+					{ date: "2014-07-01", quantity: 2100 },
+					{ date: "2014-07-02", quantity: 2200 },
+					{ date: "2014-07-11", quantity: 2400 },
+					{ date: "2014-07-20", quantity: 2600 }
 				]
 			},
 			{
 				name: "Bench press",
 				unit: "kg",
 				hits: [
-					{ date: "2014-05-11", quantity: 55 },
-					{ date: "2014-06-03", quantity: 60 },
-					{ date: "2014-06-05", quantity: 55 },
-					{ date: "2014-06-10", quantity: 60 },
-					{ date: "2014-06-15", quantity: 65 }
+					{ date: "2014-06-11", quantity: 55 },
+					{ date: "2014-07-03", quantity: 60 },
+					{ date: "2014-07-05", quantity: 55 },
+					{ date: "2014-07-10", quantity: 60 },
+					{ date: "2014-07-15", quantity: 65 }
 				]
 			}
 		]

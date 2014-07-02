@@ -1,6 +1,8 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
+	scope.activity = { name: "", unit: "", hits: [] };
+
 	scope.activities = [];
 
 	scope.selectedActivity = "";
@@ -9,6 +11,10 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 
 	activitiesArrived.then(function(activities){
 		scope.activities = activities;
+
+		scope.selectedActivity = scope.activities[0];
+	}, null, function(notification){
+		scope.activities = [notification];
 
 		scope.selectedActivity = scope.activities[0];
 	});
@@ -43,11 +49,17 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	});
 
 	scope.$on("activityChanged", function(){
-		scope.activities = api.readActivities();
+		refreshActivity();
 	});
 
 	function refreshActivity(){
-		scope.activity = api.readActivity(scope.selectedActivity, scope.selectedYear, scope.selectedMonth.id);
+		var activityArrived = api.readActivity(scope.selectedActivity, scope.selectedYear, scope.selectedMonth.id);
+
+		activityArrived.then(function(activity){
+			scope.activity = activity;
+		}, null, function(notification){
+
+		});
 	}
 
 	scope.createActivity = function(){
