@@ -16,8 +16,12 @@ fit.config(function($httpProvider){
 	});
 });
 
-fit.run(function(api){
+fit.run(function(api, $interval){
 	api.authorize();
+
+	$interval(function(){
+		api.authorize();
+	}, 60000);
 });
 
 fit.directive("test", function(api){

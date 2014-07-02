@@ -89,6 +89,21 @@ app.get("/api/logout", function(req, res){
 	});
 });
 
+app.get("/api/read_activities", function(req, res){
+	db.users.find({ token: req.headers[tokenHeader] }, { activities: 1 }, function(error, users){
+		if(error){
+			console.log(error);
+		}
+		else {
+			var result = [];
+			for(var i = 0, l = users[0].activities.length; i < l; i++){
+				result.push(users[0].activities[i].name);
+			}
+			res.send(result);
+		}
+	});
+});
+
 app.get('/users', function(req, res) {
 	db.users.find({}, function(error, users){
 		if(error || !users) console.log(error);
@@ -99,8 +114,8 @@ app.get('/users', function(req, res) {
 });
 
 app.get("/data", function(req, res){
-	authorize(req.headers[tokenHeader], function(){
-		res.send("top secret data");
+	authorize(req.headers[tokenHeader], function(username){
+		res.send("top secret data: " + username);
 	}, function(){
 		res.send(401);
 	});
@@ -118,18 +133,19 @@ function generateToken()
 }
 
 function authorize(token, success, fail){
-	db.users.find({ token: token }, { tokenExpiration: 1 }, function(error, users){
+	db.users.find({ token: token }, { tokenExpiration: 1, username: 1 }, function(error, users){
 		if(error){
 			console.log("DB Error - users.find(): " + error);
 		}
 
 		if(users.length > 0 && users[0].tokenExpiration > Date.now()){
+			var user = users[0];
 			db.users.update({ token: token }, { $set: { tokenExpiration: (Date.now() + tokenExpiration) } }, function(error, users){
 				if(error){
 					console.log("DB Error - users.update() " + error);
 				}
 				else {
-					success();
+					success(user.username);
 				}
 			});
 		}
@@ -139,6 +155,17 @@ function authorize(token, success, fail){
 		}
 	});
 }
+
+/*db.users.update({ username: "csati" }, { $set: { activities: [
+	{
+		name: "Running",
+		unit: "m",
+		hits: [
+			{ date: "2014-06-27", quantity: 1000 },
+			{ date: "2014-06-28", quantity: 1500 }
+		]
+	}
+] }});*/
 
 app.use(express.static(path.join(__dirname, "../public")));
 

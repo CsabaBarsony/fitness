@@ -1,9 +1,17 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
-	scope.activities = api.readActivities();
+	scope.activities = [];
 
-	scope.selectedActivity = scope.activities[0];
+	scope.selectedActivity = "";
+
+	var activitiesArrived = api.readActivities();
+
+	activitiesArrived.then(function(activities){
+		scope.activities = activities;
+
+		scope.selectedActivity = scope.activities[0];
+	});
 
 	scope.months = [
 		{ id: 1, name: "Jan" },

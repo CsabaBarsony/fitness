@@ -1,9 +1,11 @@
 "use strict";
 
-fit.factory("api", ["$http", "$window", function(http, window){
-	var api = {
-		get: function(){
-			http({ method: 'GET', url: '/data?username=csati&token=dswOFjFlI2' }).
+fit.factory("api", ["$http", "$window", "$q", function(http, window, q){
+	var version = "server";
+
+	var server = {
+		users: function(){
+			http({ method: 'GET', url: '/users' }).
 				success(function(data) {
 					console.log(data);
 				}).
@@ -12,12 +14,50 @@ fit.factory("api", ["$http", "$window", function(http, window){
 				});
 		},
 
-		set: function(data){
-			http({ method: "POST", url: "/users", data: data }).
-				success(function(data){
+		authorize: function(){
+			http.defaults.headers.common["X-Auth-Token"] = sessionStorage.getItem("token");
+			http({ method: 'GET', url: '/api/authorize' });
+		},
+
+		logout: function(){
+			http({ method: 'GET', url: '/api/logout' }).
+				success(function(data) {
+					if(data.logoutSuccess === "1"){
+						window.location.href = "/login.html";
+					}
+					else {
+						console.log("Error while trying to log out.");
+					}
+				}).
+				error(function(data) {
+					console.log(data);
+				});
+		},
+
+		readActivities: function(){
+			var defer = q.defer();
+
+			http({ method: 'GET', url: '/api/read_activities' }).
+				success(function(data) {
+					console.log(data);
+					defer.resolve(data);
+				}).
+				error(function(data) {
+					console.log(data);
+					defer.reject("Something went wrong :(");
+				});
+
+			return defer.promise;
+		}
+	};
+
+	var local = {
+		get: function(){
+			http({ method: 'GET', url: '/data' }).
+				success(function(data) {
 					console.log(data);
 				}).
-				error(function(data){
+				error(function(data) {
 					console.log(data);
 				});
 		},
@@ -275,5 +315,6 @@ fit.factory("api", ["$http", "$window", function(http, window){
 		return +date.substr(8, 2);
 	}
 
-	return api;
+	if(version === "local") return local;
+	else if(version === "server") return server;
 }]);
