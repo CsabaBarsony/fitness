@@ -10,11 +10,16 @@ fit.directive("fitCalendar", ["fitCalendarService", function(calendarService){
 		},
 
 		link: function(scope){
-
-
 			scope.dayShortNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 			scope.$watch("activity", function(newActivity){
+				if(newActivity.status === "loading"){
+					scope.loading = true;
+					return;
+				}
+				else {
+					scope.loading = false;
+				}
 				scope.weeks = calendarService.getWeeksArray(newActivity.year, newActivity.month);
 				scope.cells = new Array(scope.weeks.length * 7);
 				var dayOffset = calendarService.getFirstDayOffset(newActivity.year, newActivity.month);

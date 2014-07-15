@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Calendar directive", function(){
+xdescribe("Calendar directive", function(){
 	var element;
 
 	beforeEach(function(){

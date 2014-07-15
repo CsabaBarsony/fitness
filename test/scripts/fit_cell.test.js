@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Cell directive", function(){
+xdescribe("Cell directive", function(){
 	var element;
 
 	beforeEach(function(){

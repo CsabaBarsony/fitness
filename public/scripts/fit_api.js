@@ -1,7 +1,7 @@
 "use strict";
 
 fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window, q, timeout){
-	var version = "local";
+	var version = "server";
 
 	var server = {
 		users: function(){
@@ -110,7 +110,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 			var that = this;
 
 			timeout(function(){
-				defer.notify("please wait...");
+				defer.notify("Reading Activity...");
 			}, 0);
 
 			timeout(function(){
@@ -131,9 +131,9 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 						}
 					}
 
-					defer.resolve(activity);
+					defer.resolve(result);
 				}
-			}, 1000);
+			}, 500);
 
 			return defer.promise;
 		},
@@ -189,7 +189,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 					result.push(that.activities[i].name);
 				}
 				defer.resolve(result);
-			}, 1000);
+			}, 500);
 
 			return defer.promise;
 		},

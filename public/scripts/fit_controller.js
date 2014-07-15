@@ -1,7 +1,7 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
-	scope.activity = { name: "", unit: "", hits: [] };
+	scope.activity = { status: "loading", message: "Please wait..." };
 
 	scope.activities = [];
 
@@ -13,30 +13,21 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		scope.activities = activities;
 
 		scope.selectedActivity = scope.activities[0];
+
+		refreshActivity();
+
 	}, null, function(notification){
 		scope.activities = [notification];
 
 		scope.selectedActivity = scope.activities[0];
+
 	});
 
-	scope.months = [
-		{ id: 1, name: "Jan" },
-		{ id: 2, name: "Feb" },
-		{ id: 3, name: "Mar" },
-		{ id: 4, name: "Apr" },
-		{ id: 5, name: "May" },
-		{ id: 6, name: "Jun" },
-		{ id: 7, name: "Jul" },
-		{ id: 8, name: "Aug" },
-		{ id: 9, name: "Sep" },
-		{ id: 10, name: "Oct" },
-		{ id: 11, name: "Nov" },
-		{ id: 12, name: "Dec" }
-	];
+	scope.months = createMonths();
 
 	scope.selectedMonth = scope.months[new Date().getMonth()];
 
-	scope.years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
+	scope.years = createYears();
 
 	scope.selectedYear = scope.years[0];
 
@@ -57,8 +48,9 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 
 		activityArrived.then(function(activity){
 			scope.activity = activity;
-		}, null, function(notification){
 
+		}, null, function(notification){
+			scope.activity = { status: "loading", message: notification };
 		});
 	}
 
@@ -99,11 +91,15 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 			throw new Error("FitController.createActivity() - error while creating new Activity");
 		}
 
-		scope.activities = api.readActivities();
+		var activitiesArrived = api.readActivities();
 
-		scope.selectedActivity = selectedActivity.name;
+		activitiesArrived.then(function(newActivity){
+			scope.activities = newActivity;
 
-		refreshActivity();
+			scope.selectedActivity = newActivity.name;
+
+			refreshActivity();
+		});
 	};
 
 	scope.updateActivity = function(){
@@ -168,5 +164,24 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		api.logout();
 	};
 
-	refreshActivity();
+	function createMonths(){
+		return [
+			{ id: 1, name: "Jan" },
+			{ id: 2, name: "Feb" },
+			{ id: 3, name: "Mar" },
+			{ id: 4, name: "Apr" },
+			{ id: 5, name: "May" },
+			{ id: 6, name: "Jun" },
+			{ id: 7, name: "Jul" },
+			{ id: 8, name: "Aug" },
+			{ id: 9, name: "Sep" },
+			{ id: 10, name: "Oct" },
+			{ id: 11, name: "Nov" },
+			{ id: 12, name: "Dec" }
+		];
+	}
+
+	function createYears(){
+		return [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
+	}
 }]);
