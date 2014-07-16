@@ -1,7 +1,7 @@
 "use strict";
 
 fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window, q, timeout){
-	var version = "server";
+	var version = "local";
 
 	var server = {
 		users: function(){
@@ -110,7 +110,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 			var that = this;
 
 			timeout(function(){
-				defer.notify("Reading Activity...");
+				defer.notify("loading activity...");
 			}, 0);
 
 			timeout(function(){
@@ -133,7 +133,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 
 					defer.resolve(result);
 				}
-			}, 500);
+			}, 1000);
 
 			return defer.promise;
 		},
@@ -180,16 +180,17 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 			var that = this;
 
 			timeout(function(){
-				defer.notify("please wait...");
+				defer.notify("loading activities...");
 			}, 0);
 
 			timeout(function(){
 				var result = [];
+
 				for(var i = 0, l = that.activities.length; i < l; i++){
 					result.push(that.activities[i].name);
 				}
 				defer.resolve(result);
-			}, 500);
+			}, 1000);
 
 			return defer.promise;
 		},
@@ -269,7 +270,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 		},
 
 		activities: [
-			{
+			/*{
 				name: "Running",
 				unit: "m",
 				hits: [
@@ -290,7 +291,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 					{ date: "2014-07-10", quantity: 60 },
 					{ date: "2014-07-15", quantity: 65 }
 				]
-			}
+			}*/
 		]
 	};
 

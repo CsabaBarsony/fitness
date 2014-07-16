@@ -1,15 +1,29 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
-	scope.activity = { status: "loading", message: "Please wait..." };
+	scope.months = createMonths();
+	scope.years = createYears();
+	scope.selectedMonth = scope.months[new Date().getMonth()];
+	scope.selectedYear = scope.years[0];
+	scope.activity = { year: scope.selectedYear, month: scope.selectedMonth.id, hits: [] };
 
 	scope.activities = [];
-
 	scope.selectedActivity = "";
 
 	var activitiesArrived = api.readActivities();
 
 	activitiesArrived.then(function(activities){
+		if(activities.length === 0){
+			var agree = confirm("You don't have Activities yet, do You want to create one?");
+
+			if(agree){
+				scope.createActivity();
+			}
+			else{
+				return;
+			}
+		}
+
 		scope.activities = activities;
 
 		scope.selectedActivity = scope.activities[0];
@@ -22,14 +36,6 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 		scope.selectedActivity = scope.activities[0];
 
 	});
-
-	scope.months = createMonths();
-
-	scope.selectedMonth = scope.months[new Date().getMonth()];
-
-	scope.years = createYears();
-
-	scope.selectedYear = scope.years[0];
 
 	scope.optionsChange = function(){
 		refreshActivity();

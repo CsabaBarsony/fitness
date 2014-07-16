@@ -12,7 +12,7 @@
 	<div ng-controller="FitController">
 		<div test></div>
 		<a href="" ng-click="logout()">logout</a>
-		<select	ng-model="selectedActivity" ng-options="activity for activity in activities" ng-change="optionsChange()"></select>
+		<select	ng-model="selectedActivity" ng-show="activities.length > 0" ng-options="activity for activity in activities" ng-change="optionsChange()"></select>
 		<select ng-model="selectedYear" ng-options="year for year in years" ng-change="optionsChange()"></select>
 		<select ng-model="selectedMonth" ng-options="month.name for month in months" ng-change="optionsChange()"></select>
 		<button ng-click="createActivity()">New Activity</button>
