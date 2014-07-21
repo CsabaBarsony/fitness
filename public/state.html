@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="sm">
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>State machine</title>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body ng-controller="MainController">
+	<button ng-click="sm.bored('uncsi')" ng-disabled="!working">Bored</button>
+	<button ng-click="sm.breakOver('vissza dógozni!')" ng-disabled="!coffee">Break over</button>
+	<button ng-click="sm.callForMeeting('hüje megbeszélés...')" ng-disabled="!(working || coffee)">Call for meeting</button>
+	<button ng-click="sm.endMeeting('hüje mindenki!')" ng-disabled="!meeting">End meeting</button>
+
+	<div class="state-indicator state-working" ng-show="working">Working</div>
+	<div class="state-indicator state-coffee" ng-show="coffee">Coffee</div>
+	<div class="state-indicator state-meeting" ng-show="meeting">Meeting</div>
+
+	<!--<script type="text/javascript" src="lib/jquery/jquery.js"></script>-->
+	<script type="text/javascript" src="lib/angular/angular.js"></script>
+	<script type="text/javascript" src="lib/state_machine/state_machine.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>
