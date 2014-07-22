@@ -2,7 +2,7 @@
 
 var app = angular.module("sm", []);
 
-app.controller("MainController", function($scope){
+app.controller("MainController", function($scope, $timeout){
 	$scope.sm = StateMachine.create({
 		initial: "working",
 		events: [
@@ -16,7 +16,13 @@ app.controller("MainController", function($scope){
 				$scope.working = true;
 			},
 			onleaveworking: function(){
-				$scope.working = false;
+				$scope.message = "leaving working...";
+				$timeout(function(){
+					$scope.message = null;
+					$scope.working = false;
+					$scope.sm.transition();
+				}, 2000);
+				return StateMachine.ASYNC;
 			},
 
 			oncoffee: function(){
@@ -34,4 +40,6 @@ app.controller("MainController", function($scope){
 			}
 		}
 	});
+
+	$scope.message = null;
 });

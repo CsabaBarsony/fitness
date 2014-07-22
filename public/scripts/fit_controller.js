@@ -1,6 +1,10 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
+	function sayHello(name){
+		var text = "Hello " + name;
+		var sayAlert
+	}
 	scope.months = createMonths();
 	scope.years = createYears();
 	scope.selectedMonth = scope.months[new Date().getMonth()];
@@ -13,20 +17,17 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	var activitiesArrived = api.readActivities();
 
 	activitiesArrived.then(function(activities){
+		scope.activities = activities;
+		scope.selectedActivity = scope.activities[0];
+
 		if(activities.length === 0){
 			var agree = confirm("You don't have Activities yet, do You want to create one?");
 
 			if(agree){
 				scope.createActivity();
 			}
-			else{
-				return;
-			}
+			return;
 		}
-
-		scope.activities = activities;
-
-		scope.selectedActivity = scope.activities[0];
 
 		refreshActivity();
 

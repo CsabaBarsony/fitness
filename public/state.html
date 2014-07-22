@@ -10,7 +10,8 @@
 	<button ng-click="sm.breakOver('vissza dógozni!')" ng-disabled="!coffee">Break over</button>
 	<button ng-click="sm.callForMeeting('hüje megbeszélés...')" ng-disabled="!(working || coffee)">Call for meeting</button>
 	<button ng-click="sm.endMeeting('hüje mindenki!')" ng-disabled="!meeting">End meeting</button>
-
+	<button ng-click="sm.transaction.cancel()">Cancel</button>
+	{{message}}
 	<div class="state-indicator state-working" ng-show="working">Working</div>
 	<div class="state-indicator state-coffee" ng-show="coffee">Coffee</div>
 	<div class="state-indicator state-meeting" ng-show="meeting">Meeting</div>
