@@ -1,16 +1,21 @@
-.state-indicator {
-    width: 300px;
-    height: 200px;
+#light {
+	width: 300px;
+	height: 200px;
 }
 
-.state-working {
-    background-color: #ff7e50;
+#words {
+	font-size: 2em;
+	margin-left: 120px;
 }
 
-.state-coffee {
-    background-color: #907259;
+.red {
+	background-color: #f2422d;
 }
 
-.state-meeting {
-    background-color: #82c0ff;
+.yellow {
+	background-color: #f4c640;
+}
+
+.green {
+	background-color: #92cf00;
 }

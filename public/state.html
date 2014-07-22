@@ -6,15 +6,12 @@
 	<link rel="stylesheet" href="style.css" />
 </head>
 <body ng-controller="MainController">
-	<button ng-click="sm.bored('uncsi')" ng-disabled="!working">Bored</button>
-	<button ng-click="sm.breakOver('vissza dógozni!')" ng-disabled="!coffee">Break over</button>
-	<button ng-click="sm.callForMeeting('hüje megbeszélés...')" ng-disabled="!(working || coffee)">Call for meeting</button>
-	<button ng-click="sm.endMeeting('hüje mindenki!')" ng-disabled="!meeting">End meeting</button>
-	<button ng-click="sm.transaction.cancel()">Cancel</button>
-	{{message}}
-	<div class="state-indicator state-working" ng-show="working">Working</div>
-	<div class="state-indicator state-coffee" ng-show="coffee">Coffee</div>
-	<div class="state-indicator state-meeting" ng-show="meeting">Meeting</div>
+	<div menu main="main"></div>
+	<div id="light" ng-class="color">
+		<div id="words" ng-show="wordsShow">
+			{{word}}
+		</div>
+	</div>
 
 	<!--<script type="text/javascript" src="lib/jquery/jquery.js"></script>-->
 	<script type="text/javascript" src="lib/angular/angular.js"></script>
