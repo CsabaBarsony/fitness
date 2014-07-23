@@ -1,32 +1,6 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
-	scope.smFit = StateMachine.create({
-		initial: "initial",
-		events: [
-			{ name: "getActivities", from: "initial", to: "active" },
-			{ name: "getFirstActivity", from: "active", to: "calendar" },
-			{ name: "emptyActivities", from: "active", to: "blank" },
-			{ name: "createActivity", from: ["blank", "calendar"], to: "calendar" },
-			{ name: "deleteActivity", from: "calendar", to: "initial" },
-			{ name: "updateActivity", from: "calendar", to: "calendar" }
-		],
-		callbacks: {
-			oninitial: function(){
-
-			},
-			onactive: function(){
-
-			},
-			oncalendar: function(){
-
-			},
-			onblank: function(){
-
-			}
-		}
-	});
-
 	scope.months = createMonths();
 	scope.years = createYears();
 	scope.selectedMonth = scope.months[new Date().getMonth()];
@@ -36,32 +10,80 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	scope.activities = [];
 	scope.selectedActivity = "";
 
-	var activitiesArrived = api.readActivities();
+	scope.smFit = StateMachine.create({
+		initial: "initial",
+		events: [
+			{ name: "getActivities", from: "initial", to: "active" },
+			{ name: "getFirstActivity", from: "active", to: "calendar" },
+			{ name: "emptyActivities", from: "active", to: "blank" },
+			{ name: "createActivity", from: ["blank", "calendar"], to: "calendar" },
+			{ name: "deleteActivity", from: "calendar", to: "calendar" },
+			{ name: "updateActivity", from: "calendar", to: "calendar" },
+			{ name: "deleteLastActivity", from: "calendar", to: "initial"}
+		],
+		callbacks: {
+			oninitial: function(){
 
-	activitiesArrived.then(function(activities){
-		if(activities.length === 0){
-			var agree = confirm("You don't have Activities yet, do You want to create one?");
+			},
+			onleaveinitial: function(){
+				var activitiesArrived = api.readActivities();
 
-			if(agree){
-				scope.createActivity();
-			}
-			else{
-				return;
+				activitiesArrived.then(function(activities){
+					scope.activities = activities;
+
+					scope.selectedActivity = scope.activities[0];
+
+					scope.smFit.transition();
+
+					//refreshActivity();
+
+				}, null, function(notification){
+					scope.activities = [notification];
+
+					scope.selectedActivity = scope.activities[0];
+
+				});
+
+				return StateMachine.ASYNC;
+			},
+			onactive: function(){
+				if(scope.activities.length > 0){
+					scope.smFit.getFirstActivity();
+				}
+				else {
+					scope.smFit.emptyActivities();
+				}
+			},
+			onleaveactive: function(){
+				var activityArrived = api.readActivity(scope.selectedActivity, scope.selectedYear, scope.selectedMonth.id);
+
+				activityArrived.then(function(activity){
+					scope.activity = activity;
+
+					scope.smFit.transition();
+
+				}, null, function(notification){
+					scope.activity = { status: "loading", message: notification };
+				});
+
+				return StateMachine.ASYNC;
+			},
+			oncalendar: function(){
+				var x = 0;
+			},
+			onblank: function(){
+				var x = 0;
+			},
+			onenterstate: function(event, from, to, message){
+				console.log("Enter - event: " + event + ", from: " + from + ", to: " + to + ", message: " + message);
+			},
+			onleavestate: function(event, from, to, message){
+				console.log("Leave - event: " + event + ", from: " + from + ", to: " + to + ", message: " + message);
 			}
 		}
-
-		scope.activities = activities;
-
-		scope.selectedActivity = scope.activities[0];
-
-		refreshActivity();
-
-	}, null, function(notification){
-		scope.activities = [notification];
-
-		scope.selectedActivity = scope.activities[0];
-
 	});
+
+	scope.smFit.getActivities();
 
 	scope.optionsChange = function(){
 		refreshActivity();

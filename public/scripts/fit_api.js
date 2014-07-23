@@ -270,7 +270,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 		},
 
 		activities: [
-			/*{
+			{
 				name: "Running",
 				unit: "m",
 				hits: [
@@ -291,7 +291,7 @@ fit.factory("api", ["$http", "$window", "$q", "$timeout", function(http, window,
 					{ date: "2014-07-10", quantity: 60 },
 					{ date: "2014-07-15", quantity: 65 }
 				]
-			}*/
+			}
 		]
 	};
 
