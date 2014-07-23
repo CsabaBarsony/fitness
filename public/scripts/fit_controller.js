@@ -1,6 +1,32 @@
 "use strict";
 
 fit.controller("FitController", ["$scope", "api", function(scope, api){
+	scope.smFit = StateMachine.create({
+		initial: "initial",
+		events: [
+			{ name: "getActivities", from: "initial", to: "active" },
+			{ name: "getFirstActivity", from: "active", to: "calendar" },
+			{ name: "emptyActivities", from: "active", to: "blank" },
+			{ name: "createActivity", from: ["blank", "calendar"], to: "calendar" },
+			{ name: "deleteActivity", from: "calendar", to: "initial" },
+			{ name: "updateActivity", from: "calendar", to: "calendar" }
+		],
+		callbacks: {
+			oninitial: function(){
+
+			},
+			onactive: function(){
+
+			},
+			oncalendar: function(){
+
+			},
+			onblank: function(){
+
+			}
+		}
+	});
+
 	scope.months = createMonths();
 	scope.years = createYears();
 	scope.selectedMonth = scope.months[new Date().getMonth()];
