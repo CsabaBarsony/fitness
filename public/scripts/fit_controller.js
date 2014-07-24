@@ -75,10 +75,10 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 				var x = 0;
 			},
 			onenterstate: function(event, from, to, message){
-				console.log("Enter - event: " + event + ", from: " + from + ", to: " + to + ", message: " + message);
+				console.log(from + "   ->" + to + " " + event + ", message: " + message);
 			},
 			onleavestate: function(event, from, to, message){
-				console.log("Leave - event: " + event + ", from: " + from + ", to: " + to + ", message: " + message);
+				console.log(from + "->   " + to + " " + event + ", message: " + message);
 			}
 		}
 	});
