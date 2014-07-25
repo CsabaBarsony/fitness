@@ -13,12 +13,9 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 	scope.smFit = StateMachine.create({
 		initial: "initial",
 		events: [
-			{ name: "getActivities", from: "initial", to: "active" },
-			{ name: "getFirstActivity", from: "active", to: "calendar" },
-			{ name: "emptyActivities", from: "active", to: "blank" },
-			{ name: "createActivity", from: ["blank", "calendar"], to: "calendar" },
-			{ name: "deleteActivity", from: "calendar", to: "calendar" },
-			{ name: "updateActivity", from: "calendar", to: "calendar" },
+			{ name: "getActivities", from: "initial", to: "blank" },
+			{ name: "getFirstActivity", from: "blank", to: "calendar" },
+			{ name: "createActivity", from: "blank", to: "calendar" },
 			{ name: "deleteLastActivity", from: "calendar", to: "initial"}
 		],
 		callbacks: {
@@ -30,38 +27,26 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 
 				activitiesArrived.then(function(activities){
 					scope.activities = activities;
-
-					scope.selectedActivity = scope.activities[0];
-
 					scope.smFit.transition();
-
-					//refreshActivity();
-
 				}, null, function(notification){
 					scope.activities = [notification];
-
 					scope.selectedActivity = scope.activities[0];
-
 				});
 
 				return StateMachine.ASYNC;
 			},
-			onactive: function(){
+			onblank: function(){
 				if(scope.activities.length > 0){
+					scope.selectedActivity = scope.activities[0];
 					scope.smFit.getFirstActivity();
 				}
-				else {
-					scope.smFit.emptyActivities();
-				}
 			},
-			onleaveactive: function(){
+			onleaveblank: function(){
 				var activityArrived = api.readActivity(scope.selectedActivity, scope.selectedYear, scope.selectedMonth.id);
 
 				activityArrived.then(function(activity){
 					scope.activity = activity;
-
 					scope.smFit.transition();
-
 				}, null, function(notification){
 					scope.activity = { status: "loading", message: notification };
 				});
@@ -71,7 +56,7 @@ fit.controller("FitController", ["$scope", "api", function(scope, api){
 			oncalendar: function(){
 				var x = 0;
 			},
-			onblank: function(){
+			onleavecalendar: function(){
 				var x = 0;
 			},
 			onenterstate: function(event, from, to, message){
